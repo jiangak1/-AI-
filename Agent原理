@@ -1,0 +1,78 @@
+# 简单AI Agent示例
+import random
+
+# 1. 工具定义
+def get_weather(city):
+    """模拟天气查询工具"""
+    weather_options = ["晴", "多云", "小雨", "大风"]
+    temperature = random.randint(15, 35)
+    return f"{city}的天气是{random.choice(weather_options)}，气温{temperature}℃。"
+
+def simple_calculator(a, b, operator):
+    """简单计算器工具"""
+    if operator == '+':
+        return f"{a} + {b} = {a + b}"
+    elif operator == '-':
+        return f"{a} - {b} = {a - b}"
+    else:
+        return "暂不支持此运算。"
+
+# 2. 记忆（用列表模拟短期对话历史）
+conversation_history = []
+
+# 3. 核心Agent循环
+def run_simple_agent():
+    print("【简单AI Agent已启动】输入'退出'来结束对话。")
+    
+    while True:
+        # 感知
+        user_input = input("\n您：")
+        conversation_history.append(f"用户：{user_input}")
+        
+        if user_input.lower() in ["退出", "exit", "quit"]:
+            print("Agent：再见！")
+            break
+        
+        # 决策与行动
+        response = ""
+        if "天气" in user_input:
+            # 简单提取城市名（实际应用需要更复杂的NLP）
+            city = "北京" # 默认城市
+            for c in ["北京", "上海", "广州"]:
+                if c in user_input:
+                    city = c
+                    break
+            response = get_weather(city)
+        elif "计算" in user_input or "+" in user_input or "-" in user_input:
+            # 非常简单的模式匹配
+            try:
+                if "1+1" in user_input:
+                    response = simple_calculator(1, 1, '+')
+                elif "10-5" in user_input:
+                    response = simple_calculator(10, 5, '-')
+                else:
+                    response = "请尝试输入'计算1+1'或'计算10-5'。"
+            except:
+                response = "计算时出错了。"
+        else:
+            # 默认的对话回应
+            default_responses = [
+                "我理解您的意思了。",
+                "这是一个有趣的话题。",
+                "我目前还在学习中，可以试试问我天气或简单计算。",
+                "嗯，请继续。"
+            ]
+            response = random.choice(default_responses)
+        
+        # 记录并输出行动结果
+        print(f"Agent：{response}")
+        conversation_history.append(f"Agent：{response}")
+    
+    # 打印本次对话历史
+    print("\n=== 本次对话历史 ===")
+    for line in conversation_history:
+        print(line)
+
+# 4. 启动Agent
+if __name__ == "__main__":
+    run_simple_agent()
